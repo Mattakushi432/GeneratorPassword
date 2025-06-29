@@ -1,11 +1,14 @@
-import tkinter as tk
-from tkinter import ttk, messagebox
+import customtkinter
+from tkinter import messagebox
 import pyperclip
 
 from password_logic import PasswordGenerator
 
+customtkinter.set_appearance_mode("Dark")
+customtkinter.set_default_color_theme("blue")
 
-class PasswordGeneratorApp(tk.Tk):
+
+class PasswordGeneratorApp(customtkinter.CTk):
     """A class for creating the graphical interface of an application."""
 
     def __init__(self, generator: PasswordGenerator):
@@ -20,71 +23,90 @@ class PasswordGeneratorApp(tk.Tk):
     def _configure_window(self):
         """Customizes the main window."""
         self.title("Password generator")
-        self.geometry("450x500")
+        self.geometry("854x500")
         self.resizable(True, True)
-        self.minsize(450, 500)
-
-        # Setting style
-        style = ttk.Style(self)
-        style.configure("TLabel", font=("Helvetica", 11))
-        style.configure("TButton", font=("Helvetica", 10, "bold"))
-        style.configure("TEntry", font=("Helvetica", 11))
-        style.configure("TCheckbutton", font=("Helvetica", 10))
-        style.configure("Header.TLabel", font=("Helvetica", 14, "bold"))
+        self.minsize(854, 500)
 
     def _create_variables(self):
         """Creates variables to store the state of widgets."""
-        self.length_var = tk.IntVar(value=12)
-        self.count_var = tk.IntVar(value=1)
-        self.use_lowercase_var = tk.BooleanVar(value=True)
-        self.use_uppercase_var = tk.BooleanVar(value=True)
-        self.use_digits_var = tk.BooleanVar(value=True)
-        self.use_symbols_var = tk.BooleanVar(value=False)
+        self.length_var = customtkinter.StringVar(value="12")
+        self.count_var = customtkinter.StringVar(value="1")
+        self.use_lowercase_var = customtkinter.BooleanVar(value=True)
+        self.use_uppercase_var = customtkinter.BooleanVar(value=True)
+        self.use_digits_var = customtkinter.BooleanVar(value=True)
+        self.use_symbols_var = customtkinter.BooleanVar(value=False)
 
     def _create_widgets(self):
         """Creates and places all interface elements."""
-        frame = ttk.Frame(self, padding="20")
-        frame.pack(fill="both", expand=True)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(3, weight=1)
 
-        header_label = ttk.Label(frame, text="Generation settings", style="Header.TLabel")
-        header_label.grid(row=0, column=0, columnspan=2, pady=(0, 20), sticky="w")
+        setting_frame = customtkinter.CTkFrame(self, corner_radius=10)
+        setting_frame.grid(row=0, column=0, padx=20, pady=20, sticky="new")
+        setting_frame.grid_columnconfigure(1, weight=1)
+
+        header_label = customtkinter.CTkLabel(setting_frame, text="Generation settings",
+                                              font=customtkinter.CTkFont(size=20, weight="bold"))
+        header_label.grid(row=0, column=0, columnspan=2, padx=20, pady=(20, 10))
 
         # Password length
-        ttk.Label(frame, text="Password length:").grid(row=1, column=0, sticky="w", pady=5)
-        ttk.Entry(frame, textvariable=self.length_var, width=10).grid(row=1, column=1, sticky="w", pady=5)
+        customtkinter.CTkLabel(setting_frame, text="Password length:").grid(
+            row=1, column=0, padx=(20, 10), pady=10, sticky="w")
+        customtkinter.CTkEntry(setting_frame, textvariable=self.length_var).grid(
+            row=1, column=1, padx=(10, 20), pady=10, sticky="w")
+
+        # Number of password
+        customtkinter.CTkLabel(setting_frame, text="Number of password").grid(
+            row=2, column=0, padx=(20, 10), pady=5, sticky="w")
+        customtkinter.CTkEntry(setting_frame, textvariable=self.count_var).grid(
+            row=2, column=1, padx=(10, 20), pady=10, sticky="w")
 
         # CheckBox
-        ttk.Label(frame, text="Use of symbols:", style="Header.TLabel").grid(
-            row=3, column=0, columnspan=2, pady=(20, 10), sticky="w")
-        ttk.Checkbutton(frame, text="Lowercase letters (a-z)", variable=self.use_lowercase_var).grid(
-            row=4, column=0, columnspan=2, sticky="w")
-        ttk.Checkbutton(frame, text="Capital letters (A-Z)", variable=self.use_uppercase_var).grid(
-            row=5, column=0, columnspan=2, sticky="w")
-        ttk.Checkbutton(frame, text="Numbers (0-9)", variable=self.use_digits_var).grid(
-            row=6, column=0, columnspan=2, sticky="w")
-        ttk.Checkbutton(frame, text="Special characters (! @ # $% ^ & *).", variable=self.use_symbols_var).grid(
-            row=7, column=0, columnspan=2, sticky="w")
+        checkbox_frame = customtkinter.CTkFrame(self, corner_radius=10)
+        checkbox_frame.grid(row=1, column=0, padx=20, pady=0, sticky="new")
 
-        ttk.Button(frame, text="Generate", command=self._on_generate_click).grid(
-            row=8, column=0, columnspan=2, pady=20)
+        customtkinter.CTkLabel(checkbox_frame, text="Use of symbols:",
+                               font=customtkinter.CTkFont(size=16, weight="bold")).pack(padx=20, pady=(10, 5),
+                                                                                        anchor="w")
+        customtkinter.CTkCheckBox(checkbox_frame, text="Lowercase letters (a-z)",
+                                  variable=self.use_lowercase_var).pack(padx=20, pady=5, anchor="w")
+        customtkinter.CTkCheckBox(checkbox_frame, text="Numbers (0-9)",
+                                  variable=self.use_digits_var).pack(padx=20, pady=5, anchor="w")
+        customtkinter.CTkCheckBox(checkbox_frame, text="Special characters (!@#$%^&*...)",
+                                  variable=self.use_symbols_var).pack(padx=20, pady=(5, 10), anchor="w")
 
-        self.result_text = tk.Text(frame, height=8, width=50, font=("Courier New", 10), relief="solid", borderwidth=1)
-        self.result_text.grid(row=9, column=0, columnspan=2, sticky="nsew")
+        generate_button = customtkinter.CTkButton(self, text="Generate", command=self._on_generate_click, height=40,
+                                                  font=customtkinter.CTkFont(size=14, weight="bold"))
+        generate_button.grid(row=2, column=0, padx=20, pady=10)
 
-        ttk.Button(frame, text="Copy all", command=self._copy_to_clipboard).grid(
-            row=10, column=0, columnspan=2, pady=(10, 0))
+        self.result_text = customtkinter.CTkTextbox(self, height=150, corner_radius=10, font=("Courier New", 12))
+        self.result_text.grid(row=3, column=0, padx=20, pady=(0, 20))
+
+        copy_button = customtkinter.CTkButton(self, text="Copy all",
+                                              command=self._copy_to_clipboard, fg_color="transparent", border_width=2)
+        copy_button.grid(row=4, column=0, padx=20, pady=(0, 20))
 
     def _on_generate_click(self):
         """Handler for clicking the ‘Generate’ button."""
         try:
-            length = self.length_var.get()
-            count = self.count_var.get()
-            if length <= 0 or count <= 0:
-                messagebox.showerror("Error", "The length and quantity must be greater than zero.")
+            length_str = self.length_var.get()
+            count_str = self.count_var.get()
+            if not length_str or not count_str:
+                messagebox.showerror("Error", "The length and quantity fields cannot be empty.")
                 return
-        except tk.TclError:
-            messagebox.showerror("Error", "Enter the correct numbers for length and quantity.")
+            try:
+                length = int(length_str)
+                count = int(count_str)
+            except ValueError:
+                pass
+
+        except ValueError:
+            messagebox.showerror("Error", "Please enter whole numbers only.")
             return
+
+        if length <= 0 or count <= 0:
+            messagebox.showerror("Error", "The length and quantity must be greater than zero.")
+
         passwords = []
         for _ in range(count):
             password = self.generator.generate(
@@ -99,14 +121,20 @@ class PasswordGeneratorApp(tk.Tk):
                 return
             passwords.append(password)
 
-        self.result_text.delete(1.0, tk.END)
-        self.result_text.insert(tk.END, "\n".join(passwords))
+        self.result_text.delete(1.0, "end")
+        self.result_text.insert("end", "\n".join(passwords))
 
     def _copy_to_clipboard(self):
         """Copies generated passwords to the clipboard."""
-        text_to_copy = self.result_text.get(1.0, tk.END).strip()
-        if text_to_copy:
-            pyperclip.copy(text_to_copy)
-            messagebox.showinfo("Copied", "Passwords copied to clipboard!")
-        else:
+        text_to_copy = self.result_text.get(1.0, "end").strip('\n')
+        if not text_to_copy:
             messagebox.showwarning("Empty", "There are no passwords to copy.")
+            return
+
+        excel_friendly_text = f"{text_to_copy}"
+
+        text_to_copy = "\n".join(excel_friendly_text)
+
+        self.clipboard_clear()
+        self.clipboard_append(excel_friendly_text)
+        messagebox.showinfo("Copied", "Passwords are copied and ready to be pasted into Excel!")
