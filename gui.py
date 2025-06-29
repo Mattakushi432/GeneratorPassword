@@ -72,15 +72,15 @@ class PasswordGeneratorApp(customtkinter.CTk):
                                   variable=self.use_lowercase_var).pack(padx=20, pady=5, anchor="w")
         customtkinter.CTkCheckBox(checkbox_frame, text="Numbers (0-9)",
                                   variable=self.use_digits_var).pack(padx=20, pady=5, anchor="w")
-        customtkinter.CTkCheckBox(checkbox_frame, text="Special characters (!@#$%^&*...)",
+        customtkinter.CTkCheckBox(checkbox_frame, text="Special characters (!@#$...)",
                                   variable=self.use_symbols_var).pack(padx=20, pady=(5, 10), anchor="w")
 
         generate_button = customtkinter.CTkButton(self, text="Generate", command=self._on_generate_click, height=40,
                                                   font=customtkinter.CTkFont(size=14, weight="bold"))
         generate_button.grid(row=2, column=0, padx=20, pady=10)
 
-        self.result_text = customtkinter.CTkTextbox(self, height=150, corner_radius=10, font=("Courier New", 12))
-        self.result_text.grid(row=3, column=0, padx=20, pady=(0, 20))
+        self.result_text = customtkinter.CTkTextbox(self, height=150, width=450, corner_radius=10, font=("Courier New", 12))
+        self.result_text.grid(row=3, column=0, padx=20, pady=(0, 10), sticky="nsew")
 
         copy_button = customtkinter.CTkButton(self, text="Copy all",
                                               command=self._copy_to_clipboard, fg_color="transparent", border_width=2)
