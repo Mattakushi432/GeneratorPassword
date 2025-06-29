@@ -22,3 +22,4 @@ class PasswordGenerator:
 
         password = "".join(random.choice(char_set) for _ in range(length))
         return password
+

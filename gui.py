@@ -79,7 +79,8 @@ class PasswordGeneratorApp(customtkinter.CTk):
                                                   font=customtkinter.CTkFont(size=14, weight="bold"))
         generate_button.grid(row=2, column=0, padx=20, pady=10)
 
-        self.result_text = customtkinter.CTkTextbox(self, height=150, width=450, corner_radius=10, font=("Courier New", 12))
+        self.result_text = customtkinter.CTkTextbox(self, height=150, width=450, corner_radius=10,
+                                                    font=("Courier New", 12))
         self.result_text.grid(row=3, column=0, padx=20, pady=(0, 10), sticky="nsew")
 
         copy_button = customtkinter.CTkButton(self, text="Copy all",
