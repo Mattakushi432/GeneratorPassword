@@ -1,9 +1,12 @@
 import string
 import random
 
+
 class PasswordGenerator:
     """Responsible for the basic logic of password generation."""
-    def generate(self, length: int, use_lowercase: bool, use_uppercase: bool, use_digits: bool, use_symbols: bool) -> str | None:
+
+    def generate(self, length: int, use_lowercase: bool, use_uppercase: bool,
+                 use_digits: bool, use_symbols: bool) -> str | None:
         char_set = ""
         if use_lowercase:
             char_set += string.ascii_lowercase
@@ -19,4 +22,3 @@ class PasswordGenerator:
 
         password = "".join(random.choice(char_set) for _ in range(length))
         return password
-
