@@ -1,6 +1,5 @@
 import customtkinter
 from tkinter import messagebox
-import pyperclip
 
 from password_logic import PasswordGenerator
 
@@ -134,7 +133,6 @@ class PasswordGeneratorApp(customtkinter.CTk):
 
         excel_friendly_text = f"{text_to_copy}"
 
-        text_to_copy = "\n".join(excel_friendly_text)
 
         self.clipboard_clear()
         self.clipboard_append(excel_friendly_text)

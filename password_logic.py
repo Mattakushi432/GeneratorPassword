@@ -1,5 +1,5 @@
 import string
-import random
+import secrets
 
 
 class PasswordGenerator:
@@ -20,6 +20,6 @@ class PasswordGenerator:
         if not char_set:
             return None
 
-        password = "".join(random.choice(char_set) for _ in range(length))
+        password = "".join(secrets.choice(char_set) for _ in range(length))
         return password
 
