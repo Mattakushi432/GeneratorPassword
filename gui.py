@@ -1,8 +1,6 @@
 import customtkinter
 from tkinter import messagebox
 
-from password_logic import PasswordGenerator
-
 customtkinter.set_appearance_mode("Dark")
 customtkinter.set_default_color_theme("blue")
 
@@ -10,7 +8,7 @@ customtkinter.set_default_color_theme("blue")
 class PasswordGeneratorApp(customtkinter.CTk):
     """A class for creating the graphical interface of an application."""
 
-    def __init__(self, generator: PasswordGenerator):
+    def __init__(self, generator):
         super().__init__()
 
         self.generator = generator
@@ -48,27 +46,27 @@ class PasswordGeneratorApp(customtkinter.CTk):
                                               font=customtkinter.CTkFont(size=20, weight="bold"))
         header_label.grid(row=0, column=0, columnspan=2, padx=20, pady=(20, 10))
 
-        # Password length
         customtkinter.CTkLabel(setting_frame, text="Password length:").grid(
             row=1, column=0, padx=(20, 10), pady=10, sticky="w")
         customtkinter.CTkEntry(setting_frame, textvariable=self.length_var).grid(
             row=1, column=1, padx=(10, 20), pady=10, sticky="w")
 
-        # Number of password
-        customtkinter.CTkLabel(setting_frame, text="Number of password").grid(
+        customtkinter.CTkLabel(setting_frame, text="Number of passwords:").grid(
             row=2, column=0, padx=(20, 10), pady=5, sticky="w")
         customtkinter.CTkEntry(setting_frame, textvariable=self.count_var).grid(
             row=2, column=1, padx=(10, 20), pady=10, sticky="w")
 
-        # CheckBox
         checkbox_frame = customtkinter.CTkFrame(self, corner_radius=10)
         checkbox_frame.grid(row=1, column=0, padx=20, pady=0, sticky="new")
+        checkbox_frame.grid_columnconfigure(0, weight=1)
 
-        customtkinter.CTkLabel(checkbox_frame, text="Use of symbols:",
+        customtkinter.CTkLabel(checkbox_frame, text="Use characters:",
                                font=customtkinter.CTkFont(size=16, weight="bold")).pack(padx=20, pady=(10, 5),
                                                                                         anchor="w")
         customtkinter.CTkCheckBox(checkbox_frame, text="Lowercase letters (a-z)",
                                   variable=self.use_lowercase_var).pack(padx=20, pady=5, anchor="w")
+        customtkinter.CTkCheckBox(checkbox_frame, text="Uppercase letters (A-Z)",
+                                  variable=self.use_uppercase_var).pack(padx=20, pady=5, anchor="w")
         customtkinter.CTkCheckBox(checkbox_frame, text="Numbers (0-9)",
                                   variable=self.use_digits_var).pack(padx=20, pady=5, anchor="w")
         customtkinter.CTkCheckBox(checkbox_frame, text="Special characters (!@#$...)",
@@ -82,30 +80,22 @@ class PasswordGeneratorApp(customtkinter.CTk):
                                                     font=("Courier New", 12))
         self.result_text.grid(row=3, column=0, padx=20, pady=(0, 10), sticky="nsew")
 
-        copy_button = customtkinter.CTkButton(self, text="Copy all",
+        copy_button = customtkinter.CTkButton(self, text="Copy All",
                                               command=self._copy_to_clipboard, fg_color="transparent", border_width=2)
         copy_button.grid(row=4, column=0, padx=20, pady=(0, 20))
 
     def _on_generate_click(self):
         """Handler for clicking the ‘Generate’ button."""
         try:
-            length_str = self.length_var.get()
-            count_str = self.count_var.get()
-            if not length_str or not count_str:
-                messagebox.showerror("Error", "The length and quantity fields cannot be empty.")
-                return
-            try:
-                length = int(length_str)
-                count = int(count_str)
-            except ValueError:
-                pass
-
-        except ValueError:
-            messagebox.showerror("Error", "Please enter whole numbers only.")
+            length = int(self.length_var.get())
+            count = int(self.count_var.get())
+        except (ValueError, TypeError):
+            messagebox.showerror("Error", "Length and quantity must be whole numbers.")
             return
 
         if length <= 0 or count <= 0:
-            messagebox.showerror("Error", "The length and quantity must be greater than zero.")
+            messagebox.showerror("Error", "Length and quantity must be greater than zero.")
+            return
 
         passwords = []
         for _ in range(count):
@@ -126,14 +116,17 @@ class PasswordGeneratorApp(customtkinter.CTk):
 
     def _copy_to_clipboard(self):
         """Copies generated passwords to the clipboard."""
-        text_to_copy = self.result_text.get(1.0, "end").strip('\n')
+        text_to_copy = self.result_text.get(1.0, "end").strip()
         if not text_to_copy:
             messagebox.showwarning("Empty", "There are no passwords to copy.")
             return
 
-        excel_friendly_text = f"{text_to_copy}"
-
-
-        self.clipboard_clear()
-        self.clipboard_append(excel_friendly_text)
-        messagebox.showinfo("Copied", "Passwords are copied and ready to be pasted into Excel!")
+        try:
+            import pyperclip
+            pyperclip.copy(text_to_copy)
+            messagebox.showinfo("Copied", "Passwords have been copied to the clipboard!")
+        except ImportError:
+            messagebox.showerror("Error",
+                                 "The 'pyperclip' library is not installed.\nPlease install it: pip install pyperclip")
+        except Exception as e:
+            messagebox.showerror("Error", f"Could not copy text: {e}")

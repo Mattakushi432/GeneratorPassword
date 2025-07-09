@@ -10,18 +10,4 @@ def main():
 
 
 if __name__ == "__main__":
-    try:
-        import pyperclip
-    except ImportError:
-        print("The 'pyperclip' library was not found. Attempting to install...")
-        import subprocess
-        import sys
-
-        try:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "pyperclip"])
-        except Exception as e:
-            print(f"Failed to install pyperclip: {e}")
-            print("Please install it manually: pip install pyperclip")
-            sys.exit(1)
-
     main()
