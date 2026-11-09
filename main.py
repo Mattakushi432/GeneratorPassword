@@ -1,13 +1,8 @@
-from gui import PasswordGeneratorApp
-from password_logic import PasswordGenerator
+"""Entry point: python main.py"""
 
+import flet as ft
 
-def main():
-    """The main function to start the application."""
-    password_generator = PasswordGenerator()
-    app = PasswordGeneratorApp(generator=password_generator)
-    app.mainloop()
-
+from passgen.ui.app import main
 
 if __name__ == "__main__":
-    main()
+    ft.run(main)
